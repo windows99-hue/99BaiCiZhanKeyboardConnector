@@ -42,6 +42,6 @@ Press <kbd>F2</kbd> to switch modes during operation.
 
 ## Afterword
 
-This program uses the `MIT License`. If you have suggestions or want to report bugs, feel free to fork my repository or submit an `Issue`.
+This program uses the `GNU General Public License v3.0`Licence. If you have suggestions or want to report bugs, feel free to fork my repository or submit an `Issue`.
 
 Thanks for your support! May you memorize all your vocabulary soon!

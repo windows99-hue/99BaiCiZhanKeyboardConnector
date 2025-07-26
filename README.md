@@ -44,6 +44,6 @@ python main.py
 
 ## 写在后面
 
-本程序使用`MIT`许可证，如果您对程序有建议或者反馈bug，欢迎fork我的仓库或者向我提交`Issue`
+本程序使用`GNU General Public License v3.0`许可证，如果您对程序有建议或者反馈bug，欢迎fork我的仓库或者向我提交`Issue`
 
 感谢支持！祝你早日背下所有单词！
