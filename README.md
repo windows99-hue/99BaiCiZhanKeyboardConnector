@@ -18,9 +18,9 @@
 pip install -r requirements.txt
 ~~~
 
-安装好`uiautomation2`后，请将您的手机连接到您的电脑，并确定adb可以连接到您的手机（别忘了打开usb调试并允许RSA指纹）
+安装好`uiautomator2`后，请将您的手机连接到您的电脑，并确定adb可以连接到您的手机（别忘了打开usb调试并允许RSA指纹）
 
-执行这串代码，`uiautomation2`会安装必要的软件到您的电脑
+执行这串代码，`uiautomator2`会安装必要的软件到您的电脑
 
 ~~~shell
 python -m uiautomator2 init
