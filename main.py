@@ -10,7 +10,7 @@ print_admin("欢迎来到99百词斩键盘连接器！请确保您的手机已�
 print_uquestion("按下F2可切换模式，按下ESC可退出程序。")
 print_status("正在初始化程序...")
 
-d = u2.connect()  # 连接设备
+d = u2.connect()
 
 print_good("设备连接成功！")
 d.settings['operation_delay'] = (0, 0)  # 设置操作延迟为0
@@ -75,6 +75,8 @@ def init_4areas():
     print_good("\"下一题\"获取成功！按下回车键可以按下下一题按钮。")
 
     is_4areas_init = True
+
+print_warning("请确保百词斩APP已打开，并且处于答题界面。")
 
 while True:
     cmd = input("1为键盘模式, 2为四方格模式, 3退出: ")
