@@ -6,24 +6,22 @@ import os
 import signal
 from tqdm import tqdm
 
-print_admin("欢迎来到99百词斩键盘连接器！请确保您的手机已连接USB调试模式，并且已安装了百词斩APP。妥善配置uiautomation2库。")
-print_uquestion("按下F2可切换模式，按下ESC可退出程序。")
-print_status("正在初始化程序...")
+print_admin("Welcome to the 99 Baicizhan Keyboard Connector! Please ensure your phone is connected in USB debugging mode and the Baicizhan app is installed. Configure the uiautomator2 library properly.")
+print_uquestion("Press F2 to switch modes, press ESC to exit the program.")
+print_status("Initializing program...")
 
 d = u2.connect()
 
-print_good("设备连接成功！")
-d.settings['operation_delay'] = (0, 0)  # 设置操作延迟为0
+print_good("Device connected successfully!")
+d.settings['operation_delay'] = (0, 0)  # Set operation delay to 0
 
-d.app_start("com.jiongji.andriod.card") #打开百词斩
+d.app_start("com.jiongji.andriod.card") # Launch Baicizhan
 
-key_position = {} # 0为x，1为y
+key_position = {} # 0 for x, 1 for y
 areas_position = {}
 
 is_key_init = False
 is_4areas_init = False
-
-repeat_image_base64 = "h9c7+xOXaSrtKuTcsVlQjWJyZ6Djn0fGF5seRevYGwk1S3vGRkZGRkZGRkZev4DJ5jPuVdPXb0AAAAASUVORK5CYII="
 
 def init_keyboard():
     global is_key_init
@@ -33,27 +31,26 @@ def init_keyboard():
             x, y = d(text=i).center()
             key_position[i] = [x, y]
         except u2.exceptions.UiObjectNotFoundError:
-            print_error("无法找到百词斩键盘位置，请打开百词斩后按下y重试")
+            print_error("Failed to locate Baicizhan keyboard position. Please open Baicizhan and press 'y' to retry")
             keyboard.wait("y")
             i = ord('a')
             continue
         except Exception as e:
-            print_e(f"发生错误: {e}")
+            print_e(f"Error occurred: {e}")
 
     key_position["backspace"] = [None, None, None]
     key_position["backspace"][1] = key_position["m"][1]
     key_position["backspace"][0] = key_position["m"][0] * 1.2
 
     key_position["enter"] = [None, None, None]
-    key_position["enter"][0], key_position["enter"][1] = d(text="提交").center() 
-    print_good("键盘位置获取成功！")
+    key_position["enter"][0], key_position["enter"][1] = d(text="Submit").center() 
+    print_good("Keyboard position acquired successfully!")
     is_key_init = True
 
 def init_4areas():
     global is_4areas_init
-    print_status("正在获取四方格位置...")
+    print_status("Acquiring four-quadrant positions...")
 
-    #repeat_image_xpath = "//*[@text=\"h9c7+xOXaSrtKuTcsVlQjWJyZ6Djn0fGF5seRevYGwk1S3vGRkZGRkZGRkZev4DJ5jPuVdPXb0AAAAASUVORK5CYII=\"]"
     four_area_list = d.xpath("//*[@resource-id=\"root\"]/*[1]/*[6]/*[1]/*[2]/*[1]/*").all()  # XPath比UIAuto.Dev大1,也就是比列表下标大1，从1开始算
 
     try:
@@ -67,39 +64,38 @@ def init_4areas():
         areas_position["rightup"][0], areas_position["rightup"][1] = four_area_list[1].center()
         areas_position["leftdown"][0], areas_position["leftdown"][1] = four_area_list[2].center()
         areas_position["rightdown"][0], areas_position["rightdown"][1] = four_area_list[3].center()
-    except u2.exceptions.UiObjectNotFoundError as e:
-        print_error(e)
-        print_error("无法找到四方格位置，请打开百词斩后按下y重试")
+    except u2.exceptions.UiObjectNotFoundError:
+        print_error("Failed to locate four-quadrant positions. Please open Baicizhan and press 'y' to retry")
         keyboard.wait("y")
         init_4areas()
         return
     except Exception as e:
-        print_e(f"发生错误: {e}")
+        print_e(f"Error occurred: {e}")
         return
-    print_good("四方格位置获取成功！")
+    print_good("Four-quadrant positions acquired successfully!")
 
-    print_status("正在获取\"下一题\"位置")
+    print_status("Acquiring 'Next Question' position")
     areas_position["next-question"][0], areas_position["next-question"][1] = d.xpath("//*[@text=\"h9c7+xOXaSrtKuTcsVlQjWJyZ6Djn0fGF5seRevYGwk1S3vGRkZGRkZGRkZev4DJ5jPuVdPXb0AAAAASUVORK5CYII=\"]").center()
-    print_good("\"下一题\"获取成功！按下回车键可以按下下一题按钮。")
+    print_good("'Next Question' position acquired! Press Enter to click the next question button.")
 
     is_4areas_init = True
 
-print_warning("请确保百词斩APP已打开，并且处于答题界面。")
+print_warning("Please ensure the Baicizhan app is open and in the question interface.")
 
 while True:
-    cmd = input("1为键盘模式, 2为四方格模式, 3退出: ")
+    cmd = input("1 for keyboard mode, 2 for four-quadrant mode, 3 to exit: ")
     if cmd == "1":
-        print_good("已选择键盘模式！")
+        print_good("Keyboard mode selected!")
         mode = "kbd"
         break
     elif cmd == "2":
-        print_good("已选择四方格模式！")
+        print_good("Four-quadrant mode selected!")
         mode = "4areas"
         break
     elif cmd == "3":
         sys.exit(0)
     else:
-        print_error("无效输入，请输入1或2。")
+        print_error("Invalid input, please enter 1 or 2.")
         continue
 
 if mode == "kbd":
@@ -107,14 +103,14 @@ if mode == "kbd":
 elif mode == "4areas":
     init_4areas()
 
-print_good("预处理完成！")
+print_good("Preprocessing completed!")
 
 
 def on_key_event(e):
-    # 只处理按键按下事件
+    # Only process key down events
     if e.event_type == keyboard.KEY_DOWN:
         if e.name == "esc":
-            print_warning("退出程序")
+            print_warning("Exiting program")
             keyboard.unhook_all()
             os.kill(os.getpid(), signal.SIGINT)
             sys.exit()
@@ -125,45 +121,39 @@ def on_key_event(e):
                 init_keyboard()
             elif mode == "4areas" and not is_4areas_init:
                 init_4areas()
-            print_status("切换模式为{}".format("键盘" if mode == "kbd" else "四方格"))
+            print_status("Switched to {} mode".format("keyboard" if mode == "kbd" else "four-quadrant"))
 
-        # 处理普通字符键
+        # Process character keys
         if mode == "kbd":
             if e.name.isprintable() and len(e.name) == 1:
-                #print_status(f'发送字符 {e.name} 到设备')
                 try:
-                    d.click(key_position[e.name][0], key_position[e.name][1])  # 点击对应的文本元素
+                    d.click(key_position[e.name][0], key_position[e.name][1])
                 except:
-                    print_error(f'无法找到 {e.name} 键')
+                    print_error(f'Failed to find {e.name} key')
             
-            # 处理特殊功能键
+            # Process special function keys
             elif e.name == "enter":
                 d.click(x=key_position["enter"][0], y=key_position["enter"][1])
             elif e.name == "backspace":
-                print_status("发送退格键到设备")
+                print_status("Sending backspace to device")
                 d.click(x=key_position["backspace"][0], y = key_position["backspace"][1])
         elif mode == "4areas":
                 if e.name == "w":
-                    #print_status("按下左上")
                     d.click(x=areas_position["leftup"][0], y=areas_position["leftup"][1])
                 elif e.name == "s":
-                    #print_status("按下左下")
                     d.click(x=areas_position["leftdown"][0], y=areas_position["leftdown"][1])
                 elif e.name == "e":
-                    #print_status("按下右上")
                     d.click(x=areas_position["rightup"][0], y=areas_position["rightup"][1])
                 elif e.name == "d":
-                    #print_status("按下右下")
                     d.click(x=areas_position["rightdown"][0], y=areas_position["rightdown"][1])
                 elif e.name == "enter":
-                    #print_status("按下下一题")
                     d.click(x=areas_position["next-question"][0], y=areas_position["next-question"][1])
     
-# 设置全局键盘钩子
-keyboard.hook(on_key_event, suppress=True)  # suppress=True阻止按键传播到其他应用
+# Set global keyboard hook
+keyboard.hook(on_key_event, suppress=True)  # suppress=True prevents key propagation to other apps
 
-print_status("键盘监听已启动，按ESC键退出...")
+print_status("Keyboard listener activated, press ESC to exit...")
 
-keyboard.wait('esc')  # 等待ESC键被按下
+keyboard.wait('esc')  # Wait for ESC key press
 keyboard.unhook_all()
-print("程序已退出")
+print("Program exited")
